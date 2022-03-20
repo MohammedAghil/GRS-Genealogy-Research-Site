@@ -1,0 +1,428 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <title>Genealogy Research Site</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+  <link href="./css/styles.css" rel="stylesheet">
+</head>
+<body>
+
+
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+        <div class="container-fluid">
+          <a class="navbar-brand" href="#"><img src="./images/logo.png" height="70px"></a>
+          <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#navbarNav" aria-controls="navbarNav" aria-expanded="false" aria-label="Toggle navigation">
+            <span class="navbar-toggler-icon"></span>
+          </button>
+          <div class="collapse navbar-collapse" id="navbarNav">
+            <ul class="navbar-nav">
+              <li class="nav-item">
+                <a class="nav-link" aria-current="page" href="index.html">Home</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link" href="index.html">About</a>
+              </li>
+              <li class="nav-item">
+                <a class="nav-link active" href="#">GRS Match - One To Many</a>
+              </li>
+            </ul>
+          </div>
+        </div>
+      </nav>
+<br>
+<div class="container-fluid ">
+  <h1 class="text-center">Genealogy Research One to Many Tool</h1>
+  <div class="container mt-3">
+    <form id="form">
+      <div class="mb-3 mt-3">
+        <label for="kitNumber" class="fw-bold">One-to-many DNA Comparison for Kit</label>
+        <input type="kitNumber" class="form-control" id="kitNumber" placeholder="Kit Number" name="kitNumber" required>
+      </div>
+      <div class="row">
+        <div class="col">
+            <label for="filterBy" class="fw-bold">Filter By : </label>
+            <div class="form-check" id="filterBy">
+                <input class="form-check-input" type="radio" name="filterByRadioButton" id="filterByRadioButton">
+                <label class="form-check-label" for="filterByRadioButton">
+                  Autosomal
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="filterByRadioButton" id="filterByRadioButton" checked>
+                <label class="form-check-label" for="filterByRadioButton">
+                  X
+                </label>
+              </div>
+        </div>
+        <div class="col">
+            <label for="withThisOffset" class="fw-bold">With this Offset</label>
+            <select class="form-select" id="withThisOffset" aria-label="Default select example" required>
+                <option value="0" selected>0</option>
+                <option value="50">50</option>
+                <option value="100">100</option>
+                <option value="150">150</option>
+                <option value="250">250</option>
+                <option value="300">300</option>
+                <option value="1000">1000</option>
+                <option value="2000">2000</option>
+                <option value="3000">3000</option>
+                <option value="5000">5000</option>
+                <option value="7500">7500</option>
+                <option value="10000">10000</option>
+                <option value="15000">15000</option>
+                <option value="25000">25000</option>
+                <option value="50000">50000</option>
+                <option value="75000">75000</option>
+              </select>
+        </div>
+        <div class="col">
+            <label for="withThisLimit" class="fw-bold">With this Limit</label>
+            <select class="form-select" id="withThisLimit" aria-label="Default select example" required>
+                <option>100000</option>
+                <option>50000</option>
+                <option>10000</option>
+                <option>5000</option>
+                <option>3000</option>
+                <option>1000</option>
+                <option>500</option>
+                <option>100</option>
+                <option selected>50</option>
+              </select>
+          </div>
+      </div>
+      <div class="row">
+        <div class="col">
+            <label for="cmSize" class="fw-bold">cM Size</label>
+            <select class="form-select" id="cmSize" aria-label="Default select example" required>
+                <option value="100">100</option>
+                <option value="40">40</option>
+                <option value="20">20</option>
+                <option value="10">10</option>
+                <option value="9">9</option>
+                <option value="8">8</option>
+                <option value="7" selected="selected">7</option>
+              </select>
+        </div>
+        <div class="col">
+            <label for="tagGroups" class="fw-bold">Tag Groups</label>
+            <div class="form-check" id="tagGroups">
+                <input class="form-check-input" type="radio" name="tagGroupsRadioButton" id="tagGroupsRadioButton">
+                <label class="form-check-label" for="tagGroupsRadioButton">
+                  None
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="tagGroupsRadioButton" id="tagGroupsRadioButton">
+                <label class="form-check-label" for="tagGroupsRadioButton">
+                  All
+                </label>
+              </div>
+              <div class="form-check">
+                <input class="form-check-input" type="radio" name="tagGroupsRadioButton" id="tagGroupsRadioButton" checked>
+                <label class="form-check-label" for="tagGroupsRadioButton">
+                  One
+                </label>
+              </div>
+        </div>
+        <div class="col">
+            <label for="overlapCutOff" class="fw-bold">Overlap Cutoff</label>
+            <select class="form-select" id="overlapCutOff" aria-label="Default select example" required>
+                <option>300000</option>
+                <option>250000</option>
+                <option>200000</option>
+                <option>175000</option>
+                <option>150000</option>
+                <option>125000</option>
+                <option>100000</option>
+                <option>90000</option>
+                <option>72000</option>
+                <option>56250</option>
+                <option selected="selected">45000</option>
+                <option>0</option>
+              </select>
+          </div>
+      </div>
+    </form>
+    <div class="d-grid gap-2">
+      <button class="btn btn-dark d-md-block" onclick="getData()">Submit</button>
+    </div>
+  </div>
+</div>
+
+<br>
+<div id="results"> 
+</div>
+
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-app.js"></script>
+<script src="https://www.gstatic.com/firebasejs/8.10.0/firebase-firestore.js"></script>
+
+
+<!--Table Creation Related JS-->
+<script>
+
+  //Generate Table
+  //this table will have two headings - major and minor
+
+  const resultsDiv = document.getElementById('results');
+  resultsDiv.classList.add('table-responsive');
+  
+  function createTable(){
+    const table = document.createElement('table');
+    table.id = "resultsTable";
+    table.classList.add('table');
+  
+    //Table Headings
+    const tablehead = document.createElement('thead');
+    tablehead.classList.add('table-dark');
+    tablehead.classList.add('text-center');
+    table.appendChild(tablehead);
+  
+    //row for the major table headings
+    const tr1 = document.createElement('tr');
+    tablehead.appendChild(tr1);
+  
+    //major table headings -> Info , Haptogroup, Autosomal, X-DNA
+    const th1 = document.createElement('th'); 
+    th1.colSpan = "5"; //for name,email, age, type, sex
+    th1.innerText = "Info";
+  
+    const th2 = document.createElement('th');
+    th2.colSpan = "2";
+    th2.innerText = "HaploGroup";
+  
+    const th3 = document.createElement('th');
+    th3.colSpan = "3";
+    th3.innerText = "Autosomal";
+  
+    const th4 = document.createElement('th');
+    th4.colSpan = "2";
+    th4.innerText = "X-DNA";
+  
+    const th5 = document.createElement('th');
+    th5.colSpan = "2";
+    th5.innerText = "Others";
+  
+    tr1.appendChild(th1);
+    tr1.appendChild(th2);
+    tr1.appendChild(th3);
+    tr1.appendChild(th4);
+    tr1.appendChild(th5);
+  
+    //row for the minor table headings
+    const tr2 = document.createElement('tr');
+    tablehead.appendChild(tr2);
+  
+    //minor table headings -> Name, Email, Age, Type ,Sex, Mt, Y, Total cM, Largest, Gen, Total cM, Largest, Source, Overlap
+  
+    const th6 = document.createElement('th');
+    th6.innerText = "Name";
+  
+    const th7 = document.createElement('th');
+    th7.innerText = "Email";
+  
+    const th8 = document.createElement('th');
+    th8.innerText = "Age";
+  
+    const th9 = document.createElement('th');
+    th9.innerText = "Type";
+  
+    const th10 = document.createElement('th');
+    th10.innerText = "Sex";
+  
+    const th11 = document.createElement('th');
+    th11.innerText = "Mt";
+  
+    const th12 = document.createElement('th');
+    th12.innerText = "Y";
+  
+    const th13 = document.createElement('th');
+    th13.innerText = "total cM";
+  
+    const th14 = document.createElement('th');
+    th14.innerText = "Largest";
+  
+    const th15 = document.createElement('th');
+    th15.innerText = "Gen";
+  
+    const th16 = document.createElement('th');
+    th16.innerText = "Total cM";
+  
+    const th17 = document.createElement('th');
+    th17.innerText = "Largest";
+  
+    const th18 = document.createElement('th');
+    th18.innerText = "Source";
+  
+    const th19 = document.createElement('th');
+    th19.innerText = "Overlap";
+  
+    tr2.appendChild(th6);
+    tr2.appendChild(th7);
+    tr2.appendChild(th8);
+    tr2.appendChild(th9);
+    tr2.appendChild(th10);
+    tr2.appendChild(th11);
+    tr2.appendChild(th12);
+    tr2.appendChild(th13);
+    tr2.appendChild(th14);
+    tr2.appendChild(th15);
+    tr2.appendChild(th16);
+    tr2.appendChild(th17);
+    tr2.appendChild(th18);
+    tr2.appendChild(th19);
+  
+  
+  
+    //Table Body
+    const tablebody = document.createElement('tbody');
+    tablebody.id = "resultsTableBody";
+    tablebody.classList.add('table-light');
+    table.appendChild(tablebody);
+  
+  
+    //adding table to the result div
+    resultsDiv.appendChild(table);
+    
+  }
+  
+  
+  function resetTableBody(){
+    const tableBody = document.getElementById("resultsTableBody");
+    tableBody.innerHTML = "";
+  }
+
+
+  function checkFormFieldsandHighlight(){
+    const form = document.getElementById("form");
+    const formFields = form.getElementsByTagName("input");
+    let formFieldsValid = true;
+    for(let i = 0; i < formFields.length; i++){
+      if(formFields[i].value == ""){
+        formFieldsValid = false
+        formFields[i].style.border = "1px solid red";
+      }
+      else{
+        formFields[i].style.border = "1px solid #ced4da";
+      }
+    }
+    return formFieldsValid;
+  }
+    // Initialize Cloud Firestore through Firebase
+    firebase.initializeApp({
+        apiKey: "AIzaSyAPDRX3F8SMa9ar4LLGov5WWe4SM27PpMg",
+        authDomain: "genealogyresearchsite.firebaseapp.com",
+        projectId: "genealogyresearchsite",
+    });
+
+    var db = firebase.firestore();
+    let tableCreated = false;
+    
+
+    function getData(){
+
+      console.log("clicked");
+      if(!checkFormFieldsandHighlight()){
+        alert("Please fill in all the fields");
+        return;
+      }
+
+      if (!tableCreated){
+        createTable();
+        tableCreated = true;
+      }
+      console.log(tableCreated);
+
+   
+      db.collection("oneToMany").get().then((querySnapshot) => {
+        console.log("getting data");
+        resetTableBody();
+        const tableBody = document.getElementById("resultsTableBody");
+        querySnapshot.forEach((doc) => {
+            var dict  = doc.data();
+            console.log(dict);
+            
+            //data row
+            const tr = document.createElement('tr');
+            tableBody.appendChild(tr);
+
+            //data row -> name
+            const td1 = document.createElement('td');
+            td1.innerText = dict['name'];
+
+            //data row -> email
+            const td2 = document.createElement('td');
+            td2.innerText = dict['email'];
+
+            //data row -> age
+            const td3 = document.createElement('td');
+            td3.innerText = dict['age'];
+
+            //data row -> type
+            const td4 = document.createElement('td');
+            td4.innerText = dict['type'];
+
+            //data row -> sex
+            const td5 = document.createElement('td');
+            td5.innerText = dict['sex'];
+
+            //data row -> Mt
+            const td6 = document.createElement('td');
+            td6.innerText = dict['Mt'];
+
+            //data row -> Y
+            const td7 = document.createElement('td');
+            td7.innerText = dict['Y'];
+
+            //data row -> total cM
+            const td8 = document.createElement('td');
+            td8.innerText = dict['autosomaltotalcm'];
+
+            //data row -> largest
+            const td9 = document.createElement('td');
+            td9.innerText = dict['autosomallargest'];
+
+            //data row -> gen
+            const td10 = document.createElement('td');
+            td10.innerText = dict['gen'];
+
+            //data row -> total cM
+            const td11 = document.createElement('td');
+            td11.innerText = dict['xdnatotalcm'];
+
+            //data row -> largest
+            const td12 = document.createElement('td');
+            td12.innerText = dict['xdnalargest'];
+
+            //data row -> source
+            const td13 = document.createElement('td');
+            td13.innerText = dict['source'];
+
+            //data row -> overlap
+            const td14 = document.createElement('td');
+            td14.innerText = dict['overlap'];
+
+            tr.appendChild(td1);
+            tr.appendChild(td2);
+            tr.appendChild(td3);
+            tr.appendChild(td4);
+            tr.appendChild(td5);
+            tr.appendChild(td6);
+            tr.appendChild(td7);
+            tr.appendChild(td8);
+            tr.appendChild(td9);
+            tr.appendChild(td10);
+            tr.appendChild(td11);
+            tr.appendChild(td12);
+            tr.appendChild(td13);
+            tr.appendChild(td14);
+        });
+    });
+
+    }
+    
+</script>
+</body>
+</html>

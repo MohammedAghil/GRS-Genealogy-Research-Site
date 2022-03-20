@@ -1,0 +1,16 @@
+{
+  "name": "grs-server-side",
+  "version": "1.0.0",
+  "description": "inorder to bulk add,delete collections direcly to the server in firebase",
+  "main": "add_data.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "fast-csv": "^4.3.6",
+    "firebase": "^8.10.0",
+    "read-excel-file": "^5.2.28"
+  }
+}
