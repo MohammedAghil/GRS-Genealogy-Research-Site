@@ -45,13 +45,13 @@
         <div class="col">
             <label for="filterBy" class="fw-bold">Filter By : </label>
             <div class="form-check" id="filterBy">
-                <input class="form-check-input" type="radio" name="filterByRadioButton" id="filterByRadioButton">
+                <input class="form-check-input" type="radio" name="filterByRadioButton" id="filterByRadioButton" value="Autosomal">
                 <label class="form-check-label" for="filterByRadioButton">
                   Autosomal
                 </label>
-              </div>
+            </div>
               <div class="form-check">
-                <input class="form-check-input" type="radio" name="filterByRadioButton" id="filterByRadioButton" checked>
+                <input class="form-check-input" type="radio" name="filterByRadioButton" id="filterByRadioButton" checked value="X">
                 <label class="form-check-label" for="filterByRadioButton">
                   X
                 </label>
@@ -81,22 +81,22 @@
         <div class="col">
             <label for="withThisLimit" class="fw-bold">With this Limit</label>
             <select class="form-select" id="withThisLimit" aria-label="Default select example" required>
-                <option>100000</option>
-                <option>50000</option>
-                <option>10000</option>
-                <option>5000</option>
-                <option>3000</option>
-                <option>1000</option>
-                <option>500</option>
-                <option>100</option>
-                <option selected>50</option>
+                <option value="3000">3000</option>
+                <option value="1000">1000</option>
+                <option value="500">500</option>
+                <option value="100">100</option>
+                <option value="50">50</option>
+                <option value="25">25</option>
+                <option value="15">15</option>
+                <option value="10">10</option>
+                <option value="5" selected>5</option>
               </select>
           </div>
       </div>
       <div class="row">
         <div class="col">
             <label for="cmSize" class="fw-bold">cM Size</label>
-            <select class="form-select" id="cmSize" aria-label="Default select example" required>
+            <select class="form-select" id="cmSize" name ="cmSize" aria-label="Default select example" required>
                 <option value="100">100</option>
                 <option value="40">40</option>
                 <option value="20">20</option>
@@ -147,7 +147,7 @@
       </div>
     </form>
     <div class="d-grid gap-2">
-      <button class="btn btn-dark d-md-block" onclick="getData()">Submit</button>
+      <button class="btn btn-dark d-md-block" onclick=submitFormButtonClick()>Submit</button>
     </div>
   </div>
 </div>
@@ -163,12 +163,44 @@
 <!--Table Creation Related JS-->
 <script>
 
-  //Generate Table
-  //this table will have two headings - major and minor
+ // Initialize Cloud Firestore through Firebase
+ firebase.initializeApp({
+        apiKey: "AIzaSyAPDRX3F8SMa9ar4LLGov5WWe4SM27PpMg",
+        authDomain: "genealogyresearchsite.firebaseapp.com",
+        projectId: "genealogyresearchsite",
+    });
 
+  //Global Variables
+  var db = firebase.firestore();
+  let tableCreated = false;
   const resultsDiv = document.getElementById('results');
   resultsDiv.classList.add('table-responsive');
-  
+  let globalQueryLimit = 5;
+  let lastQuery = null;
+  let finalQuery = null;
+
+
+  //1. TABLE CREATION,RESET TABLE AND LOAD MORE BUTTONS
+  function createLoadMoreButton(){
+    let loadMoreDiv = document.createElement('div');
+    loadMoreDiv.id = "loadMoreDiv";
+    loadMoreDiv.classList.add('d-grid');
+    loadMoreDiv.classList.add('gap-2');
+    loadMoreDiv.classList.add('justify-center');
+    loadMoreDiv.classList.add('align-center');
+
+    let loadMoreButton = document.createElement('button');
+    loadMoreButton.classList.add('btn');
+    loadMoreButton.classList.add('btn-dark');
+    loadMoreButton.classList.add('d-md-block');
+    loadMoreButton.innerHTML = 'Load More';
+    loadMoreButton.onclick = function(){
+      LoadMore();
+    }
+    loadMoreDiv.appendChild(loadMoreButton);
+    resultsDiv.appendChild(loadMoreDiv);
+  }
+
   function createTable(){
     const table = document.createElement('table');
     table.id = "resultsTable";
@@ -285,6 +317,7 @@
   
     //adding table to the result div
     resultsDiv.appendChild(table);
+   
     
   }
   
@@ -295,6 +328,7 @@
   }
 
 
+  //2. CHECK FORM FIELDS AND HIGHLIGHT, ALSO GET VALUE FROM FORM FIELDS
   function checkFormFieldsandHighlight(){
     const form = document.getElementById("form");
     const formFields = form.getElementsByTagName("input");
@@ -310,39 +344,129 @@
     }
     return formFieldsValid;
   }
-    // Initialize Cloud Firestore through Firebase
-    firebase.initializeApp({
-        apiKey: "AIzaSyAPDRX3F8SMa9ar4LLGov5WWe4SM27PpMg",
-        authDomain: "genealogyresearchsite.firebaseapp.com",
-        projectId: "genealogyresearchsite",
-    });
 
-    var db = firebase.firestore();
-    let tableCreated = false;
-    
+  function getFormData(){ //This Function is used to get the form data, it will be called after the form fields are checked in the function above
+    //get the values from the form
+    const cmSize = document.getElementById("cmSize").value;
+    const filterByRadioButton = document.querySelector('input[name="filterByRadioButton"]:checked').value;
+    const localQueryLimit = document.getElementById("withThisLimit").value;
 
-    function getData(){
 
-      console.log("clicked");
+    console.log("CM : "+cmSize);
+    console.log("Filter By : "+filterByRadioButton);
+
+    if(cmSize=="" || filterByRadioButton==""){
+      return false;
+    }
+
+    //Setting Query Limit
+    if (localQueryLimit == ""){
+      globalQueryLimit = 25;
+    }
+    else{
+      console.log("Query Limit : "+localQueryLimit);
+      globalQueryLimit = localQueryLimit;
+    }
+
+    let formDataDictionary ={};
+    formDataDictionary["cmSize"] = cmSize;
+    formDataDictionary["filterBy"] = filterByRadioButton;
+    formDataDictionary["queryLimit"] = localQueryLimit;
+
+
+    return formDataDictionary;
+
+  }
+
+function submitFormButtonClick(){
+  //1. Reset the lastquery
+  lastQuery = null;
+  finalQuery = null;
+
+  //2. Call the Get Data
+  PuttingItAllTogether();
+}
+
+    //This is the Main Function which gets Called on clicking the submit button in the Form
+    function PuttingItAllTogether(){
+
+      //1. Check if the form fields are valid
+
       if(!checkFormFieldsandHighlight()){
         alert("Please fill in all the fields");
         return;
       }
 
+      if(!getFormData()){
+        alert("Please fill in all the fields, Error in Form Fields Data");
+        return;
+      }
+
+      let formDataDictionary = getFormData();
+
+      //2. Create the table if it is not created
       if (!tableCreated){
         createTable();
+        createLoadMoreButton();
         tableCreated = true;
+        console.log("table created");
       }
-      console.log(tableCreated);
 
-   
-      db.collection("oneToMany").get().then((querySnapshot) => {
-        console.log("getting data");
-        resetTableBody();
+      
+
+      //3.3 Create the Base Query
+      finalQuery = queryBuilder(formDataDictionary);
+      resetTableBody();
+      LoadMore();
+    }
+
+
+    function queryBuilder(formDataDictionary){
+      //3. Base Query Builder for the Query based on the form data 
+      let baseQuery = db.collection("oneToMany");
+
+      //3.1 Query for the Filter By - This will be included inside the CM Size Query
+      let filterByQuery = "";
+      if("filterBy" in formDataDictionary){
+        if (formDataDictionary["filterBy"]=="Autosomal"){
+          filterByQuery = "autosomaltotalcm";
+        }
+        else{
+          filterByQuery = "xdnatotalcm";
+        }
+      }
+      else{
+        return; //it is a must to have this filter;
+      }
+      console.log(filterByQuery + "here");
+
+      //3.2 Query for CmSize
+      if("cmSize" in formDataDictionary){
+        console.log(formDataDictionary["cmSize"]);
+        baseQuery = baseQuery.where(filterByQuery, ">", parseInt(formDataDictionary["cmSize"])).orderBy(filterByQuery).limit(globalQueryLimit);
+      }
+      return baseQuery;
+    }
+
+
+    function LoadMore(){
+      let formDataDictionary = getFormData();
+      console.log("Loading more");
+
+      console.log(finalQuery);
+
+      finalQuery.get().then((querySnapshot) => {
+        console.log("Total Query Results Size : "+querySnapshot.size);
+        if(querySnapshot.size==0){
+          alert("No More Results");
+          loadMoreButton
+          return;
+        }
+      
         const tableBody = document.getElementById("resultsTableBody");
         querySnapshot.forEach((doc) => {
             var dict  = doc.data();
-            console.log(dict);
+            //console.log(dict);
             
             //data row
             const tr = document.createElement('tr');
@@ -419,8 +543,16 @@
             tr.appendChild(td13);
             tr.appendChild(td14);
         });
-    });
+        // Get the last visible document
+        var lastVisible = querySnapshot.docs[querySnapshot.docs.length-1];
+        console.log("last", lastVisible);
 
+        var next = queryBuilder(formDataDictionary)
+          .startAfter(lastVisible)
+          .limit(globalQueryLimit);
+
+        finalQuery = next;
+      });
     }
     
 </script>
